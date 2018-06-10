@@ -1,2 +1,2 @@
-# Exclude the compiled javascript directory
-js
+# Exclude everything in this directory
+*

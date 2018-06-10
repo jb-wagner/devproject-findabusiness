@@ -1,8 +1,6 @@
-// See? Bootstrap is here if you want it
-$icon-font-path: '~bootstrap-sass/assets/fonts/bootstrap/';
-@import "~bootstrap-sass/assets/stylesheets/bootstrap";
 
-// See? SCSS is here if you want it
+@import "~bootstrap/dist/css/bootstrap.min.css";
+
 .example-header {
   text-align: center;
   .example-header-title {
@@ -13,4 +11,10 @@ $icon-font-path: '~bootstrap-sass/assets/fonts/bootstrap/';
   .example-header-logo {
     height: 50px;
   }
+}
+
+.biz-image {
+  background-position: center center;
+  background-size: cover;
+  background-repeat: "no-repeat";
 }

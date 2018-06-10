@@ -1,51 +1,61 @@
 const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
   context: path.resolve(__dirname, 'src'),
-  entry: {
-    main: './main.js'
-  },
+  entry: './main.ts',
+  devtool: "source-map",
+  mode: process.env.WEBPACK_SERVE ? 'development' : 'production',
   output: {
-    path: path.resolve(__dirname, 'dist/js'),
+    path: path.resolve(__dirname, 'dist'),
     filename: '[name].bundle.js'
   },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: 'index.html'
+    })
+  ],
+  serve: {
+    port: 8080,
+    hot: false,
+    clipboard: false,
+    content: path.resolve(__dirname, 'dist'),
+    lazy: false
+  },
+  resolve: {
+    // Add '.ts' and '.tsx' as resolvable extensions.
+    extensions: [".ts", ".tsx", ".js", ".json"]
+  },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        default: false,
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "vendor",
+          chunks: "initial"
+        }
+      }
+    }
+  },
   module: {
-    rules: [
-      {
+    rules: [{
         test: /\.js$/,
         exclude: /node_modules/,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: ['env']
-            }
+        use: [{
+          loader: 'babel-loader',
+          options: {
+            presets: ['env']
           }
-        ],
+        }],
       },
       {
-        test: /\.jsx$/,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: ['env', 'react']
-            }
-          }
-        ],
-      },
-      {
-        test: /\.cjsx$/,
-        use: ['coffee-loader', 'cjsx-loader']
-      },
-      {
-        test: /\.coffee$/,
-        use: ['coffee-loader']
+        test: /\.css$/,
+        loader: ['style-loader', 'css-loader']
       },
       {
         test: /\.scss$/,
-        use: [
-          {
+        use: [{
             loader: 'style-loader'
           },
           {
@@ -53,35 +63,35 @@ module.exports = {
           },
           {
             loader: 'sass-loader'
-            // options: {
-            //   includePaths: [
-            //     '~bootstrap-sass/assets/stylesheets'
-            //   ]
-            // }
           }
         ]
       },
       {
         test: /\.(png|woff|woff2|eot|ttf|svg)$/,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              limit: 10000
-            }
+        use: [{
+          loader: 'url-loader',
+          options: {
+            limit: 10000
           }
-        ]
+        }]
+      },
+      // all files with a `.ts` or `.tsx` extension will be handled by `ts-loader`
+      {
+        test: /\.tsx?$/,
+        loader: "ts-loader"
+      },
+      {
+        test: /\.css?$/,
+        loader: "css-loader"
+      },
+      {
+        enforce: "pre",
+        test: /\.js$/,
+        loader: "source-map-loader"
       }
     ]
   },
-  resolve: {
-    alias: {
-      'react': path.resolve(__dirname, 'node_modules/react/dist/react.js'),
-      'react-dom': path.resolve(__dirname, 'node_modules/react-dom/dist/react-dom.js')
-    }
-  },
   externals: {
-      google: "google"
-  },
-  devtool: 'inline-source-map'
+    google: "google"
+  }
 }
